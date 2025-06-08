@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ART-VISION s.r.o. | Opravený web</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #c8102e;
+            --secondary-color: #a10d24;
+            --dark-color: #333333;
+            --gray-600: #666666;
+            --gray-200: #e9ecef;
+            --light-color: #f8f9fa;
+            --white-color: #ffffff;
+        }
+
+        body {
+            font-family: 'Calibri', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--dark-color);
+            background-color: var(--white-color);
+        }
+
+        /* === OPRAVENÉ ZÁHLAVÍ === */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            transition: all 0.4s ease;
+            background: transparent;
+        }
+
+        #top-bar {
+            background: rgba(0, 0, 0, 0.4);
+            color: var(--light-color);
+            padding: 8px 20px;
+            font-size: 0.85rem;
+            transition: all 0.4s ease;
+        }
+        #top-bar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .contact-info-top a, .social-media a {
+            color: var(--light-color);
+            text-decoration: none;
+            margin-left: 15px;
+            transition: color 0.3s ease;
+        }
+        .contact-info-top a:hover, .social-media a:hover {
+            color: var(--primary-color);
+        }
+        .social-media a { font-size: 1rem; }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 80px;
+            transition: 0.4s ease;
+        }
+
+        .cta-nav { 
+            background-color: #c8102e;
+            color: white;
+            border-radius: 12px;
+            text-decoration: none;
+            padding: 10px;
+            transition: height 0.4s ease-in-out;
+        }
+
+        .cta-nav:hover { 
+            background-color: #dbdbdb;
+            color: #a10d24;
+            transition:  0.4s ease-in-out;
+        }
+        
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--white-color);
+            transition: all 0.4s ease;
+            text-decoration: none;
+            flex-shrink: 0; /* Zabrání zmenšování loga */
+        }
+        .logo i { font-size: 2rem; transition: font-size 0.4s ease; }
+
+        /* JEDNOTNÉ NAVIGAČNÍ MENU */
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 32px;
+            margin: 0;
+            align-items: center;
+        }
+        .nav-menu a {
+            color: var(--white-color);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: color 0.3s ease;
+            position: relative;
+            padding: 8px 4px;
+        }
+        .nav-menu a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--primary-color);
+            transition: width 0.3s ease;
+        }
+        .nav-menu a:hover::after, .nav-menu a.active::after {
+            width: 100%;
+        }
+
+        .nav-right-items {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .mobile-toggle {
+            display: none; /* Skryto na desktopu */
+            background: none;
+            border: none;
+            color: var(--white-color);
+            font-size: 1.8rem;
+            cursor: pointer;
+        }
+        
+        /* STYLY PRO SCROLLOVÁNÍ */
+        .header.scrolled {
+            background: var(--white-color);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .header.scrolled #top-bar {
+            padding-top: 0;
+            padding-bottom: 0;
+            height: 0;
+            overflow: hidden;
+        }
+        .header.scrolled .nav-container { height: 65px; }
+        .header.scrolled .logo { color: var(--primary-color); font-size: 1.6rem; }
+        .header.scrolled .logo i { font-size: 1.8rem; }
+        .header.scrolled .nav-menu a { color: var(--dark-color); }
+        .header.scrolled .nav-menu a:hover { color: var(--primary-color); }
+        .header.scrolled .mobile-toggle { color: var(--dark-color); }
+        
+        /* RESPOZIVNÍ STYLY PRO MENU */
+        @media (max-width: 992px) {
+            .mobile-toggle { display: block; } /* Zobrazit hamburger ikonu */
+            .nav-menu {
+                display: none; /* Skrýt menu */
+                position: absolute;
+                top: 65px; /* Výška srolovaného záhlaví */
+                right: 0;
+                background: var(--white-color);
+                flex-direction: column;
+                padding: 20px;
+                box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+                width: 100%;
+                max-width: 300px;
+                gap: 10px;
+                border-radius: 0 0 8px 8px;
+            }
+            .nav-menu.active { display: flex; } /* Zobrazit aktivní menu */
+            .nav-menu a, .header.scrolled .nav-menu a {
+                color: var(--dark-color);
+                width: 100%;
+                padding: 10px;
+            }
+            .nav-menu a:hover { background-color: var(--gray-200); }
+            .nav-menu a::after { display: none; } /* Skrýt podtržítko na mobilu */
+        }
+        
+        /* Ostatní styly... */
+        .hero { color: white; padding: 180px 0 120px; position: relative; display: flex; align-items: center; justify-content: center; text-align: center; background: url('https://images.unsplash.com/photo-1556761175-5973dc0f32e7?q=80&w=2832&auto=format&fit=crop') no-repeat center center/cover; }
+        .hero::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(45deg, rgba(200, 16, 46, 0.7), rgba(30, 30, 30, 0.8)); z-index: 1; }
+        .hero-container { max-width: 1200px; margin: 0 auto; padding: 0 20px; position: relative; z-index: 2; }
+        .hero-content h1 { font-size: 3.8rem; font-weight: 700; margin-bottom: 20px; line-height: 1.2; }
+        .hero-content .subtitle { font-size: 1.4rem; margin-bottom: 30px; font-weight: 500; }
+        .cta-buttons { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;}
+        .btn { padding: 14px 30px; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; border: none; }
+        .btn-primary { background: var(--white-color); color: var(--primary-color); }
+        .btn-primary:hover { background: var(--gray-200); }
+        .btn-secondary { background: transparent; color: white; border: 2px solid white; }
+        .btn-secondary:hover { background: white; color: var(--primary-color); }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        .section-header { text-align: center; margin-bottom: 60px; }
+        .section-header h2 { font-size: 2.5rem; color: var(--dark-color); margin-bottom: 15px; }
+        .section-header p { font-size: 1.2rem; color: var(--gray-600); max-width: 800px; margin: 0 auto; }
+        .services { padding: 100px 0; background: var(--white-color); }
+        .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+        .service-card { background: var(--light-color); padding: 40px 30px; border-radius: 10px; text-align: center; transition: all 0.3s ease; border: 1px solid var(--gray-200); }
+        .service-card:hover { transform: translateY(-10px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); background: var(--primary-color); color: var(--white-color); }
+        .service-card:hover i, .service-card:hover h3, .service-card:hover p { color: var(--white-color); }
+        .service-card i { font-size: 3rem; color: var(--primary-color); margin-bottom: 20px; transition: color 0.3s ease; }
+        .service-card h3 { font-size: 1.5rem; color: var(--dark-color); margin-bottom: 15px; transition: color 0.3s ease; }
+        .service-card p { color: var(--gray-600); line-height: 1.6; transition: color 0.3s ease; }
+        .products { padding: 100px 0; background: var(--light-color); }
+        .products-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; margin-top: 60px; }
+        .product-card { background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.05); transition: all 0.3s ease; border: 1px solid var(--gray-200); }
+        .product-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .product-image { height: 200px; background: var(--gray-200); display: flex; align-items: center; justify-content: center; color: var(--primary-color); font-size: 4rem; position: relative; }
+        .product-image::after { content: "\f03d"; font-family: "Font Awesome 6 Free"; font-weight: 900; position: absolute; bottom: 10px; right: 10px; font-size: 1.5rem; color: rgba(200, 16, 46, 0.2); z-index: 1; }
+        .product-info { padding: 25px; }
+        .product-info h4 { font-size: 1.3rem; color: var(--dark-color); margin-bottom: 10px; }
+        .product-info p { color: var(--gray-600); margin-bottom: 15px; font-size: 0.95rem; }
+        .price { font-size: 1.2rem; font-weight: bold; color: var(--primary-color); }
+        .about { padding: 100px 0; background: var(--white-color); }
+        .about-content { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+        .about-text h2 { font-size: 2.5rem; color: var(--dark-color); margin-bottom: 20px; }
+        .about-text p { color: var(--gray-600); margin-bottom: 20px; font-size: 1.1rem; }
+        .stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 30px; margin-top: 40px; }
+        .stat { text-align: center; }
+        .stat-number { font-size: 2.5rem; font-weight: bold; color: var(--primary-color); }
+        .stat-label { color: var(--gray-600); font-size: 0.9rem; }
+        .about-visual { background: var(--light-color); border-radius: 15px; padding: 40px; text-align: center; border: 1px solid var(--gray-200); }
+        .about-visual i { font-size: 5rem; color: var(--primary-color); margin-bottom: 20px; }
+        .references { padding: 80px 0; background: var(--light-color); border-top: 1px solid var(--gray-200); }
+        .references-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 40px; align-items: center; }
+        .client-logo { text-align: center; }
+        .client-logo i { font-size: 3rem; color: var(--gray-600); opacity: 0.6; transition: all 0.3s ease; }
+        .client-logo i:hover { opacity: 1; color: var(--dark-color); transform: scale(1.1); }
+        .contact { padding: 100px 0; background: var(--dark-color); color: white; }
+        .contact .section-header h2 { color: white; }
+        .contact .section-header p { color: rgba(255,255,255,0.7); }
+        .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; margin-top: 60px; }
+        .contact-info h3 { font-size: 1.5rem; margin-bottom: 30px; color: var(--primary-color); }
+        .contact-item { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; color: rgba(255,255,255,0.9); }
+        .contact-item i { color: var(--primary-color); font-size: 1.2rem; width: 20px; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; color: var(--gray-200); font-size: 0.9rem; }
+        .form-group input, .form-group textarea { width: 100%; padding: 14px 16px; border: 1px solid var(--gray-600); border-radius: 8px; background: #444; color: white; font-size: 1rem; transition: all 0.3s ease; }
+        .form-group input:focus, .form-group textarea:focus { outline: none; border-color: var(--primary-color); background: #555; }
+        .footer { background: #222; color: white; padding: 50px 0 20px; }
+        .footer-content { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; margin-bottom: 30px; }
+        .footer-section h4 { color: var(--primary-color); margin-bottom: 20px; font-size: 1.2rem; }
+        .footer-section a, .footer-section p { color: rgba(255,255,255,0.8); text-decoration: none; display: block; margin-bottom: 10px; transition: color 0.3s ease; }
+        .footer-section a:hover { color: var(--primary-color); }
+        .footer-bottom { border-top: 1px solid var(--gray-600); padding-top: 20px; text-align: center; color: rgba(255,255,255,0.6); }
+        #back-to-top { position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px; background: var(--primary-color); color: var(--white-color); border: none; border-radius: 50%; font-size: 1.2rem; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.2); opacity: 0; visibility: hidden; transition: all 0.4s ease; display: flex; align-items: center; justify-content: center; text-decoration: none; }
+        #back-to-top.visible { opacity: 1; visibility: visible; }
+        #back-to-top:hover { background: var(--secondary-color); }
+        
+        @media (max-width: 768px) {
+            #top-bar { display: none; }
+            .header { background: var(--white-color); box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+            .header.scrolled .nav-container, .header .nav-container { height: 65px; }
+            .header .logo, .header.scrolled .logo { color: var(--primary-color); }
+            .header .mobile-toggle, .header.scrolled .mobile-toggle { color: var(--dark-color); }
+            .hero { padding: 120px 0 60px; }
+            .hero-content h1 { font-size: 2.5rem; }
+            .about-content, .contact-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header" id="header">
+        <div id="top-bar">
+            <div class="container">
+                <div class="contact-info-top">
+                    <a href="tel:+420485123456"><i class="fas fa-phone"></i> +420 485 123 456</a>
+                    <a href="mailto:info@art-vision.eu"><i class="fas fa-envelope"></i> info@art-vision.eu</a>
+                </div>
+                <div class="social-media">
+                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+        </div>
+        <nav class="nav-container">
+            <a href="#home" class="logo">
+                <i class="fas fa-video"></i>
+                <span>ART-VISION</span>
+            </a>
+
+            <ul class="nav-menu" id="mainNavMenu">
+                <li><a href="#home" class="active">Domů</a></li>
+                <li><a href="#services">Služby</a></li>
+                <li><a href="#products">Produkty</a></li>
+                <li><a href="#about">O nás</a></li>
+                <li><a href="#references">Reference</a></li>
+                <li><a href="#contact">Kontakt</a></li>
+            </ul>
+
+            <div class="nav-right-items">
+                <a href="#contact" class="cta-nav">Získat nabídku</a>
+                <button class="mobile-toggle" id="mobileToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <section class="hero" id="home">
+        <div class="hero-container">
+            <div class="hero-content">
+                <p class="subtitle">Profesionální AV řešení & Interaktivní výuka</p>
+                <h1>Projekční technika pro budoucnost</h1>
+                <div class="cta-buttons">
+                    <a href="#products" class="btn btn-primary">Prohlédnout produkty</a>
+                    <a href="#contact" class="btn btn-secondary">Kontaktovat nás</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="services" id="services">
+        <div class="container">
+            <div class="section-header">
+                <h2>Naše služby</h2>
+                <p>Komplexní řešení pro všechny vaše potřeby v oblasti prezentační techniky</p>
+            </div>
+            <div class="services-grid">
+                <div class="service-card"><i class="fas fa-shopping-cart"></i><h3>Prodej</h3><p>Široký sortiment projektorů, LED displejů, interaktivních tabulí a prezentační techniky od předních světových výrobců.</p></div>
+                <div class="service-card"><i class="fas fa-handshake"></i><h3>Pronájem</h3><p>Krátkodobý i dlouhodobý pronájem projekční techniky pro akce, konference, školení a prezentace.</p></div>
+                <div class="service-card"><i class="fas fa-tools"></i><h3>Montáž a instalace</h3><p>Profesionální instalace a nastavení veškeré AV techniky včetně kompletního servisního zázemí.</p></div>
+                <div class="service-card"><i class="fas fa-chalkboard-teacher"></i><h3>Interaktivní výuka</h3><p>Moderní řešení pro vzdělávací instituce - interaktivní tabule, projektory a kompletní učební systémy.</p></div>
+                <div class="service-card"><i class="fas fa-microphone"></i><h3>Audio systémy</h3><p>Ozvučení sálů, konferenčních místností a auditorií s profesionálním audio vybavením.</p></div>
+                <div class="service-card"><i class="fas fa-cog"></i><h3>Servis a podpora</h3><p>Komplexní servisní podpora, pravidelná údržba a technická asistence pro všechny naše produkty.</p></div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="products" id="products">
+         <div class="container">
+            <div class="section-header">
+                <h2>Vybrané produkty</h2>
+                <p>Nejprodávanější produkty z našeho sortimentu</p>
+            </div>
+            <div class="products-grid">
+                <div class="product-card"><div class="product-image"><i class="fas fa-video"></i></div><div class="product-info"><h4>DLP Projektor 4K</h4><p>Vysokosvítivý DLP projektor s rozlišením 4K, ideální pro velké sály a auditorium.</p><div class="price">Od 89 000 Kč</div></div></div>
+                <div class="product-card"><div class="product-image"><i class="fas fa-tv"></i></div><div class="product-info"><h4>LED Panel 75"</h4><p>Profesionální LED displej s Ultra HD rozlišením pro prezentace a digital signage.</p><div class="price">Od 125 000 Kč</div></div></div>
+                <div class="product-card"><div class="product-image"><i class="fas fa-chalkboard"></i></div><div class="product-info"><h4>Interaktivní tabule</h4><p>Dotyková tabule s multi-touch funkcionalitou pro moderní vzdělávání.</p><div class="price">Od 95 000 Kč</div></div></div>
+                <div class="product-card"><div class="product-image"><i class="fas fa-laptop"></i></div><div class="product-info"><h4>Přenosný projektor</h4><p>Kompaktní a lehký projektor s vysokou svítivostí pro mobilní prezentace.</p><div class="price">Od 35 000 Kč</div></div></div>
+                <div class="product-card"><div class="product-image"><i class="fas fa-laptop"></i></div><div class="product-info"><h4>Přenosný projektor</h4><p>Kompaktní a lehký projektor s vysokou svítivostí pro mobilní prezentace.</p><div class="price">Od 35 000 Kč</div></div></div>
+            
+                <div class="product-card"><div class="product-image"><i class="fas fa-laptop"></i></div><div class="product-info"><h4>Přenosný projektor</h4><p>Kompaktní a lehký projektor s vysokou svítivostí pro mobilní prezentace.</p><div class="price">Od 35 000 Kč</div></div></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="about" id="about">
+        <div class="container">
+            <div class="about-content">
+                <div class="about-text">
+                    <h2>O společnosti ART-VISION</h2>
+                    <p>Jsme česká společnost se sídlem v Liberci, která se více než 15 let specializuje na prodej, pronájem a instalaci moderní prezentační techniky.</p>
+                    <p>Naše zkušenosti pokrývají široké spektrum projektů - od vybavení škol a univerzit interaktivními tabulemi po instalaci komplexních AV systémů v konferenčních centrech a auditorech.</p>
+                    <div class="stats">
+                        <div class="stat"><div class="stat-number">15+</div><div class="stat-label">Let zkušeností</div></div>
+                        <div class="stat"><div class="stat-number">500+</div><div class="stat-label">Spokojených zákazníků</div></div>
+                        <div class="stat"><div class="stat-number">50+</div><div class="stat-label">Školních projektů</div></div>
+                        <div class="stat"><div class="stat-number">24/7</div><div class="stat-label">Technická podpora</div></div>
+                    </div>
+                </div>
+                <div class="about-visual"><i class="fas fa-award"></i><h3>Certifikovaný partner</h3><p>Jsme autorizovaným distributorem a servisním partnerem předních světových značek v oblasti AV techniky.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="references" id="references">
+        <div class="container">
+            <div class="section-header">
+                <h2>Naši klienti</h2>
+                <p>Důvěřují nám přední společnosti a instituce</p>
+            </div>
+            <div class="references-grid">
+                <div class="client-logo" title="Univerzita Karlova"><i class="fas fa-university"></i></div>
+                <div class="client-logo" title="Škoda Auto"><i class="fas fa-car"></i></div>
+                <div class="client-logo" title="Česká spořitelna"><i class="fas fa-landmark"></i></div>
+                <div class="client-logo" title="Ministerstvo školství"><i class="fas fa-school"></i></div>
+                <div class="client-logo" title="O2 Arena"><i class="fas fa-hockey-puck"></i></div>
+                <div class="client-logo" title="Kongresové centrum Praha"><i class="fas fa-microphone-alt"></i></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="contact" id="contact">
+        <div class="container">
+             <div class="section-header">
+                <h2>Kontaktujte nás</h2>
+                <p>Rádi vám pomůžeme s výběrem vhodného řešení pro vaše potřeby</p>
+            </div>
+            <div class="contact-grid">
+                <div class="contact-info">
+                    <h3>Kontaktní informace</h3>
+                    <div class="contact-item"><i class="fas fa-map-marker-alt"></i><span>Ostravská 671/10, 460 07 Liberec</span></div>
+                    <div class="contact-item"><i class="fas fa-phone"></i><span>+420 485 123 456</span></div>
+                    <div class="contact-item"><i class="fas fa-envelope"></i><span>info@art-vision.eu</span></div>
+                    <div class="contact-item"><i class="fas fa-clock"></i><span>Po-Pá: 8:00-17:00</span></div>
+                    <div class="contact-item"><i class="fas fa-globe"></i><span>www.art-vision.eu</span></div>
+                </div>
+                 <form>
+                    <div class="form-group"><label for="name">Jméno a příjmení</label><input type="text" id="name" name="name" placeholder="Vaše jméno"></div>
+                    <div class="form-group"><label for="email">E-mail</label><input type="email" id="email" name="email" placeholder="vas@email.cz"></div>
+                    <div class="form-group"><label for="message">Zpráva</label><textarea id="message" name="message" rows="5" placeholder="Popište nám vaše požadavky..."></textarea></div>
+                    <button type="submit" class="btn" style="width: 100%; color: var(--white-color); background: var(--primary-color);"><i class="fas fa-paper-plane"></i> Odeslat poptávku</button>
+                </form>
+            </div>
+        </div>
+    </section>
+    
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section"><h4>ART-VISION s.r.o.</h4><p>Specialisté na projekční techniku a interaktivní výuku s více než 15 lety zkušeností.</p></div>
+                <div class="footer-section"><h4>Služby</h4><a href="#services">Prodej</a><a href="#services">Pronájem</a><a href="#services">Instalace</a><a href="#services">Servis</a></div>
+                <div class="footer-section"><h4>Informace</h4><a href="#about">O společnosti</a><a href="#contact">Kontakt</a><a href="#">Obchodní podmínky</a></div>
+            </div>
+            <div class="footer-bottom"><p>&copy; 2025 ART-VISION s.r.o. Všechna práva vyhrazena.</p></div>
+        </div>
+    </footer>
+
+    <a href="#home" id="back-to-top" aria-label="Zpět nahoru"><i class="fas fa-arrow-up"></i></a>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const header = document.getElementById('header');
+            const mobileToggle = document.getElementById('mobileToggle');
+            const mainNavMenu = document.getElementById('mainNavMenu');
+            const backToTopButton = document.getElementById('back-to-top');
+
+            // Funkce pro rolování
+            const handleScroll = () => {
+                const isScrolled = window.scrollY > 50;
+                if (header) header.classList.toggle('scrolled', isScrolled);
+                if (backToTopButton) backToTopButton.classList.toggle('visible', isScrolled);
+            };
+
+            // Funkce pro přepínání mobilního menu
+            const toggleMobileMenu = () => {
+                if (mainNavMenu) mainNavMenu.classList.toggle('active');
+                if (mobileToggle) {
+                    const icon = mobileToggle.querySelector('i');
+                    icon.classList.toggle('fa-bars');
+                    icon.classList.toggle('fa-times');
+                }
+            };
+            
+            // Funkce pro plynulé rolování a aktivní odkaz
+            const handleSmoothScroll = (e) => {
+                e.preventDefault();
+                const targetId = e.currentTarget.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                
+                if (targetElement) {
+                    // Plynulé rolování
+                    targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    
+                    // Zavření mobilního menu po kliknutí
+                    if (mainNavMenu && mainNavMenu.classList.contains('active')) {
+                        toggleMobileMenu();
+                    }
+                    
+                    // Aktualizace aktivních odkazů
+                    document.querySelectorAll('.nav-menu a').forEach(link => link.classList.remove('active'));
+                    e.currentTarget.classList.add('active');
+                }
+            };
+
+            // Přidání posluchačů událostí
+            window.addEventListener('scroll', handleScroll);
+            if (mobileToggle) mobileToggle.addEventListener('click', toggleMobileMenu);
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', handleSmoothScroll);
+            });
+        });
+    </script>
+</body>
+</html>
